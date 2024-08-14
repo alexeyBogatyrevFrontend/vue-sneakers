@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import CardList from './components/CardList.vue'
+import CardList from './components/card/CardList.vue'
 import Header from './components/Header.vue'
+import Drawer from './components/modal/Drawer.vue'
 </script>
 
 <template>
+  <!-- <Drawer /> -->
+
   <div class="w-4/5 m-auto bg-white rounded-xl shadow-xl">
     <Header />
 
