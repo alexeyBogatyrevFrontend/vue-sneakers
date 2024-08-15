@@ -3,10 +3,10 @@ type CardType = {
   imageUrl: string
   title: string
   price: number
-  isFavorite: boolean
-  isAdded: boolean
-  onClickAdd: (event: MouseEvent) => void
-  onClickFavorite: (event: MouseEvent) => void
+  isFavorite?: boolean
+  isAdded?: boolean
+  onClickAdd?: (event: MouseEvent) => void
+  onClickFavorite?: (event: MouseEvent) => void
 }
 
 defineProps<CardType>()
