@@ -7,6 +7,12 @@ type CardList = {
 }
 
 defineProps<CardList>()
+
+const emit = defineEmits(['addToFavorite'])
+
+const onClickAdd = () => {
+  alert('add')
+}
 </script>
 
 <template>
@@ -14,9 +20,13 @@ defineProps<CardList>()
     <Card
       v-for="sneaker in sneakers"
       v-bind:key="sneaker.id"
+      :id="sneaker.id"
       :title="sneaker.title"
       :price="sneaker.price"
       :imageUrl="sneaker.imageUrl"
+      :isFavorite="sneaker.isFavorite"
+      :onClickAdd="onClickAdd"
+      :onClickFavorite="() => emit('addToFavorite', sneaker)"
     />
   </div>
 </template>

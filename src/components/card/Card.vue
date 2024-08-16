@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 type CardType = {
-  imageUrl: string
+  id: Number
   title: string
   price: number
+  imageUrl: string
   isFavorite?: boolean
   isAdded?: boolean
   onClickAdd?: (event: MouseEvent) => void
