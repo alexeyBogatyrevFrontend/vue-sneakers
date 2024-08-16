@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref, watch } from 'vue'
+import { onMounted, provide, reactive, ref, watch } from 'vue'
 
 import CardList from './components/card/CardList.vue'
 import Header from './components/Header.vue'
@@ -8,6 +8,9 @@ import axios from 'axios'
 import type { Sneaker } from 'types'
 
 const sneakers = ref<Sneaker[]>([])
+const cart = ref<Sneaker[]>([])
+const drawerOpen = ref<Boolean>(false)
+
 const filters = reactive({
   sort: 'title',
   search: ''
@@ -23,6 +26,7 @@ const onChangeSearch = (e: Event) => {
   filters.search = target.value
 }
 
+// add to favorite
 const addToFavorite = async (sneaker: Sneaker) => {
   try {
     if (!sneaker.isFavorite) {
@@ -44,6 +48,28 @@ const addToFavorite = async (sneaker: Sneaker) => {
   }
 }
 
+// add to cart
+const addToCart = (item: Sneaker) => {
+  cart.value.push(item)
+  item.isAdded = true
+}
+
+// remove from cart
+const removeFromCart = (item: Sneaker) => {
+  cart.value.splice(cart.value.indexOf(item), 1)
+  item.isAdded = false
+}
+
+// add or remove from cart
+const toggleCart = (item: Sneaker) => {
+  if (!item.isAdded) {
+    addToCart(item)
+  } else {
+    removeFromCart(item)
+  }
+}
+
+// get favorites
 const fetchFavorites = async () => {
   try {
     const { data: favorites } = await axios.get(`https://fddd0cb885c7e776.mokky.dev/favorites`)
@@ -60,6 +86,7 @@ const fetchFavorites = async () => {
   }
 }
 
+// get sneakers
 const fetchSneakers = async () => {
   try {
     const params: Record<string, string> = {
@@ -84,15 +111,22 @@ const fetchSneakers = async () => {
   }
 }
 
+// modal
+const toggleDrawer = () => {
+  drawerOpen.value = !drawerOpen.value
+}
+
 onMounted(async () => {
   await fetchSneakers()
   await fetchFavorites()
 })
 watch(filters, fetchSneakers)
+
+provide('cart', { cart, toggleDrawer, removeFromCart })
 </script>
 
 <template>
-  <!-- <Drawer /> -->
+  <Drawer v-if="drawerOpen" />
 
   <div class="w-4/5 m-auto bg-white rounded-xl shadow-xl">
     <Header />
@@ -120,7 +154,7 @@ watch(filters, fetchSneakers)
         </div>
       </div>
 
-      <CardList :sneakers="sneakers" @addToFavorite="addToFavorite" />
+      <CardList :sneakers="sneakers" @addToFavorite="addToFavorite" @addToCart="toggleCart" />
     </div>
   </div>
 </template>

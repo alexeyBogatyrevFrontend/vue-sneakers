@@ -1,3 +1,12 @@
+<script setup lang="ts">
+import type { Sneaker } from 'types'
+import { inject, type Ref } from 'vue'
+
+const cartContext = inject<{ cart: Ref<Sneaker[]>; toggleDrawer: () => void }>('cart')
+
+const toggleDrawer = cartContext?.toggleDrawer
+</script>
+
 <template>
   <header class="flex justify-between items-center border-b border-slate-300 p-8">
     <div class="flex gap-4 items-center">
@@ -9,7 +18,10 @@
     </div>
     <nav>
       <ul class="flex justify-center items-center gap-10">
-        <li class="flex items-center gap-3 text-gray-500 hover:text-black cursor-pointer">
+        <li
+          class="flex items-center gap-3 text-gray-500 hover:text-black cursor-pointer"
+          @click="toggleDrawer"
+        >
           <img src="/cart.svg" alt="cart" />
           <b>1205 руб.</b>
         </li>

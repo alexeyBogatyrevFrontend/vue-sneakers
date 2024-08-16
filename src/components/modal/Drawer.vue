@@ -1,10 +1,20 @@
-<script setup>
+<script setup lang="ts">
+import { inject, type Ref } from 'vue'
+
 import CartList from '../cart/CartList.vue'
 import DrawerHead from './DrawerHead.vue'
+import type { Sneaker } from 'types'
+
+const cartContext = inject<{ cart: Ref<Sneaker[]>; toggleDrawer: () => void }>('cart')
+
+const toggleDrawer = cartContext?.toggleDrawer
 </script>
 
 <template>
-  <div class="fixed top-0 left-0 h-full w-full bg-black z-10 opacity-70"></div>
+  <div
+    class="fixed top-0 left-0 h-full w-full bg-black z-10 opacity-70"
+    @click="toggleDrawer"
+  ></div>
   <div
     class="bg-white w-96 h-full fixed right-0 top-0 z-20 pt-16 pb-8 px-8 flex flex-col justify-between"
   >

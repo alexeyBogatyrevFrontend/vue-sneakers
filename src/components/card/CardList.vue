@@ -8,11 +8,7 @@ type CardList = {
 
 defineProps<CardList>()
 
-const emit = defineEmits(['addToFavorite'])
-
-const onClickAdd = () => {
-  alert('add')
-}
+const emit = defineEmits(['addToFavorite', 'addToCart'])
 </script>
 
 <template>
@@ -25,7 +21,8 @@ const onClickAdd = () => {
       :price="sneaker.price"
       :imageUrl="sneaker.imageUrl"
       :isFavorite="sneaker.isFavorite"
-      :onClickAdd="onClickAdd"
+      :isAdded="sneaker.isAdded"
+      :onClickAdd="() => emit('addToCart', sneaker)"
       :onClickFavorite="() => emit('addToFavorite', sneaker)"
     />
   </div>
