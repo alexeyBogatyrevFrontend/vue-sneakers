@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, provide, reactive, ref, watch } from 'vue'
+import { computed, onMounted, provide, reactive, ref, watch } from 'vue'
 
 import CardList from './components/card/CardList.vue'
 import Header from './components/Header.vue'
@@ -15,6 +15,8 @@ const filters = reactive({
   sort: 'title',
   search: ''
 })
+
+const totalCartPrice = computed(() => cart.value.reduce((accum, item) => accum + item.price, 0))
 
 const onChangeSort = (e: Event) => {
   const target = e.target as HTMLSelectElement
@@ -122,14 +124,14 @@ onMounted(async () => {
 })
 watch(filters, fetchSneakers)
 
-provide('cart', { cart, toggleDrawer, removeFromCart })
+provide('cart', { cart, totalCartPrice, toggleDrawer, removeFromCart })
 </script>
 
 <template>
   <Drawer v-if="drawerOpen" />
 
   <div class="w-4/5 m-auto bg-white rounded-xl shadow-xl">
-    <Header />
+    <Header :totalPrice="totalCartPrice" />
 
     <div class="p-10">
       <div class="flex justify-between items-center mb-8">

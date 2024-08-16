@@ -2,6 +2,12 @@
 import type { Sneaker } from 'types'
 import { inject, type Ref } from 'vue'
 
+type HeaderType = {
+  totalPrice: number
+}
+
+defineProps<HeaderType>()
+
 const cartContext = inject<{ cart: Ref<Sneaker[]>; toggleDrawer: () => void }>('cart')
 
 const toggleDrawer = cartContext?.toggleDrawer
@@ -23,7 +29,7 @@ const toggleDrawer = cartContext?.toggleDrawer
           @click="toggleDrawer"
         >
           <img src="/cart.svg" alt="cart" />
-          <b>1205 руб.</b>
+          <b>{{ totalPrice }} ₽</b>
         </li>
         <li class="flex items-center gap-3 text-gray-500 hover:text-black cursor-pointer">
           <img src="/heart.svg" alt="cart" />

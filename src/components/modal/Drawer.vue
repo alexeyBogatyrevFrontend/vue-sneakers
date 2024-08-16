@@ -1,13 +1,22 @@
 <script setup lang="ts">
-import { inject, type Ref } from 'vue'
+import { computed, inject, type Ref } from 'vue'
 
 import CartList from '../cart/CartList.vue'
 import DrawerHead from './DrawerHead.vue'
 import type { Sneaker } from 'types'
 
-const cartContext = inject<{ cart: Ref<Sneaker[]>; toggleDrawer: () => void }>('cart')
+const cartContext = inject<{
+  cart: Ref<Sneaker[]>
+  totalCartPrice: Ref
+  toggleDrawer: () => void
+}>('cart')
 
 const toggleDrawer = cartContext?.toggleDrawer
+const totalCartPrice = cartContext?.totalCartPrice
+
+const taxFromTotalCartPrice = computed(() =>
+  totalCartPrice !== undefined ? totalCartPrice.value * 0.05 : 0
+)
 </script>
 
 <template>
@@ -28,13 +37,13 @@ const toggleDrawer = cartContext?.toggleDrawer
       <div class="flex gap-2">
         <span>Итого:</span>
         <div class="flex-1 border-b border-dashed"></div>
-        <b>12990 ₽</b>
+        <b>{{ totalCartPrice }} ₽</b>
       </div>
 
       <div class="flex gap-2 mb-4">
         <span>Налог 5%:</span>
         <div class="flex-1 border-b border-dashed"></div>
-        <b>900 ₽</b>
+        <b>{{ taxFromTotalCartPrice }} ₽</b>
       </div>
 
       <button
