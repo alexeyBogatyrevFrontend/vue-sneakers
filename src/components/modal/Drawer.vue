@@ -7,16 +7,26 @@ import type { Sneaker } from 'types'
 
 const cartContext = inject<{
   cart: Ref<Sneaker[]>
-  totalCartPrice: Ref
+  totalCartPrice: Ref<number>
   toggleDrawer: () => void
+  isCreatingOrder: Ref<boolean>
 }>('cart')
 
-const toggleDrawer = cartContext?.toggleDrawer
-const totalCartPrice = cartContext?.totalCartPrice
+if (!cartContext) {
+  throw new Error('cartContext is not provided')
+}
+
+const { cart, toggleDrawer, totalCartPrice, isCreatingOrder } = cartContext
 
 const taxFromTotalCartPrice = computed(() =>
-  totalCartPrice !== undefined ? totalCartPrice.value * 0.05 : 0
+  totalCartPrice !== undefined ? Math.round(totalCartPrice.value * 0.05) : 0
 )
+const emit = defineEmits(['createOrder'])
+
+// creating order
+const cartIsEmpty = computed(() => cart.value.length === 0)
+
+const disabledButton = computed(() => isCreatingOrder.value || cartIsEmpty.value)
 </script>
 
 <template>
@@ -47,7 +57,8 @@ const taxFromTotalCartPrice = computed(() =>
       </div>
 
       <button
-        disabled
+        :disabled="disabledButton"
+        @click="() => emit('createOrder')"
         class="bg-lime-500 w-full rounded-xl py-3 cursor-pointer text-white hover:bg-lime-600 transition active:bg-lime-700 disabled:bg-slate-300 disabled:cursor-not-allowed"
       >
         Оформить заказ

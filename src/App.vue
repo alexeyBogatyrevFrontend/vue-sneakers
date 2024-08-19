@@ -10,6 +10,7 @@ import type { Sneaker } from 'types'
 const sneakers = ref<Sneaker[]>([])
 const cart = ref<Sneaker[]>([])
 const drawerOpen = ref<Boolean>(false)
+const isCreatingOrder = ref<Boolean>(false)
 
 const filters = reactive({
   sort: 'title',
@@ -26,6 +27,27 @@ const onChangeSort = (e: Event) => {
 const onChangeSearch = (e: Event) => {
   const target = e.target as HTMLSelectElement
   filters.search = target.value
+}
+
+// create order
+const createOrder = async () => {
+  try {
+    isCreatingOrder.value = true
+    const { data } = await axios.post('https://fddd0cb885c7e776.mokky.dev/orders', {
+      items: cart.value,
+      totalCartPrice: totalCartPrice.value
+    })
+
+    cart.value = []
+
+    console.log(data)
+
+    return data
+  } catch (error) {
+    console.log(error)
+  } finally {
+    isCreatingOrder.value = false
+  }
 }
 
 // add to favorite
@@ -123,12 +145,15 @@ onMounted(async () => {
   await fetchFavorites()
 })
 watch(filters, fetchSneakers)
+watch(cart, () => {
+  sneakers.value = sneakers.value.map((sneaker) => ({ ...sneaker, isAdded: false }))
+})
 
-provide('cart', { cart, totalCartPrice, toggleDrawer, removeFromCart })
+provide('cart', { cart, totalCartPrice, toggleDrawer, removeFromCart, isCreatingOrder })
 </script>
 
 <template>
-  <Drawer v-if="drawerOpen" />
+  <Drawer v-if="drawerOpen" @createOrder="createOrder" />
 
   <div class="w-4/5 m-auto bg-white rounded-xl shadow-xl">
     <Header :totalPrice="totalCartPrice" />
