@@ -201,7 +201,12 @@ provide('cart', { cart, totalCartPrice, toggleDrawer, removeFromCart, isCreating
         </div>
       </div>
 
-      <CardList :sneakers="sneakers" @addToFavorite="addToFavorite" @addToCart="toggleCart" />
+      <CardList
+        v-auto-animate
+        :sneakers="sneakers"
+        @addToFavorite="addToFavorite"
+        @addToCart="toggleCart"
+      />
     </div>
   </div>
 </template>

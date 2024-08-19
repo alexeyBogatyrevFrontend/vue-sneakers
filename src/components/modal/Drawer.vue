@@ -41,7 +41,7 @@ const disabledButton = computed(() => isCreatingOrder.value || cartIsEmpty.value
     <div class="max-h-screen overflow-auto custom-scrollbar">
       <DrawerHead />
 
-      <CartList />
+      <CartList v-auto-animate />
     </div>
 
     <InfoBlock
