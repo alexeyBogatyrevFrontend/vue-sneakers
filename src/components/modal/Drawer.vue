@@ -4,6 +4,7 @@ import { computed, inject, type Ref } from 'vue'
 import CartList from '../cart/CartList.vue'
 import DrawerHead from './DrawerHead.vue'
 import type { Sneaker } from 'types'
+import InfoBlock from '../ui/InfoBlock.vue'
 
 const cartContext = inject<{
   cart: Ref<Sneaker[]>
@@ -43,7 +44,14 @@ const disabledButton = computed(() => isCreatingOrder.value || cartIsEmpty.value
       <CartList />
     </div>
 
-    <div class="flex flex-col gap-4 pt-8">
+    <InfoBlock
+      v-if="!totalCartPrice"
+      image-url="/package-icon.png"
+      title="Корзина пустая"
+      descr="Добавьте хотя бы одну пару кроссовок, что бы сделать заказ"
+    />
+
+    <div v-if="totalCartPrice" class="flex flex-col gap-4 pt-8">
       <div class="flex gap-2">
         <span>Итого:</span>
         <div class="flex-1 border-b border-dashed"></div>

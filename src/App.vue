@@ -80,8 +80,12 @@ const addToCart = (item: Sneaker) => {
 
 // remove from cart
 const removeFromCart = (item: Sneaker) => {
-  cart.value.splice(cart.value.indexOf(item), 1)
-  item.isAdded = false
+  const index = cart.value.findIndex((cartItem) => cartItem.id === item.id)
+
+  if (index !== -1) {
+    cart.value.splice(index, 1)
+    item.isAdded = false
+  }
 }
 
 // add or remove from cart
@@ -141,13 +145,29 @@ const toggleDrawer = () => {
 }
 
 onMounted(async () => {
+  const localCart = localStorage.getItem('cart')
+  cart.value = localCart ? JSON.parse(localCart) : []
+
   await fetchSneakers()
   await fetchFavorites()
+
+  sneakers.value = sneakers.value.map((sneaker) => ({
+    ...sneaker,
+    isAdded: cart.value.some((cartItem) => cartItem.id === sneaker.id)
+  }))
 })
+
 watch(filters, fetchSneakers)
 watch(cart, () => {
   sneakers.value = sneakers.value.map((sneaker) => ({ ...sneaker, isAdded: false }))
 })
+watch(
+  cart,
+  () => {
+    localStorage.setItem('cart', JSON.stringify(cart.value))
+  },
+  { deep: true }
+)
 
 provide('cart', { cart, totalCartPrice, toggleDrawer, removeFromCart, isCreatingOrder })
 </script>
